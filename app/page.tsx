@@ -10,7 +10,7 @@ import { Button } from "@heroui/button";
 export default function Home() {
   return (
     <section className="flex flex-col items-center justify-center py-8 md:py-10">
-       <h1 className={title({size: 'sm'}) }>Track books you’ve readed.</h1>
+       <h1 className={title({size: 'sm'}) }>Track books you&apos;ve readed.</h1>
       <div className="flex gap-8 object-cover object-center mt-10 mb-12">
         <Image src="/images/farenheitCover.jpg"
                alt="Farenheit 451 book cover"

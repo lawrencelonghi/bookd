@@ -1,58 +1,54 @@
-# Dockerfile multi-stage otimizado para Next.js 15 com TypeScript e HeroUI
+# Dockerfile for Next.js 15 with TypeScript and HeroUI
 
-# Stage 1: Dependências
+# Stage 1: Dependencies
 FROM node:20-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Copiar arquivos de dependências
+# Copy package files
 COPY package.json package-lock.json* ./
-RUN npm ci --only=production
+RUN npm ci --legacy-peer-deps
 
 # Stage 2: Builder
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Copiar dependências do stage anterior
+# Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Desabilitar telemetria do Next.js
+# Disable telemetry during build
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Instalar dependências de desenvolvimento para build
-RUN npm ci
-
-# Build da aplicação
+# Build the application
 RUN npm run build
 
-# Stage 3: Runner (produção)
+# Stage 3: Runner
 FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Criar usuário não-root para segurança
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copiar arquivos necessários
+# Copy necessary files from builder
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
 
-# Ajustar permissões
-RUN chown -R nextjs:nodejs /app
+# Set the correct permission for prerender cache
+RUN mkdir .next
+RUN chown nextjs:nodejs .next
 
-# Mudar para usuário não-root
+# Copy standalone output
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
 USER nextjs
 
-# Expor porta
 EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Comando para iniciar a aplicação
 CMD ["node", "server.js"]
