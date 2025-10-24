@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  nextjs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextjs-heroui-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+    restart: unless-stopped
+    # Se precisar de variáveis de ambiente, descomente e configure:
+    # env_file:
+    #   - .env.production
