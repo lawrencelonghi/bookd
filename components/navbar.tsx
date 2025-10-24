@@ -9,6 +9,13 @@ import {
   NavbarItem,
   NavbarMenuItem,
 } from "@heroui/navbar";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter
+} from "@heroui/modal";
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import { Input } from "@heroui/input";
@@ -22,13 +29,17 @@ import { Search } from 'lucide-react';
 
 export const Navbar = () => {
 
+    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    const [ isCreateAccountOpen, setIsCreateAccountOpen ] = React.useState(false)
+    const [ isSignInOpen, setSignInOpen ] = React.useState(false)
+
     const menuItems = [
     "Sign in",
     "Create account",
     "Books",
   ];
   
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  
 
   return (
     <HeroUINavbar position="static" className="bg-neutral-900" onMenuOpenChange={setIsMenuOpen}>
@@ -48,18 +59,131 @@ export const Navbar = () => {
         <NavbarItem>
           <Link className="text-[13px] text-gray-400 tracking-wider font-bold" 
                 color="foreground" 
-                href="#">
+                href="#"
+                onClick={() => setSignInOpen(true)}>
             SIGN IN
           </Link>
         </NavbarItem>
 
+    <Modal 
+      isOpen={isSignInOpen} 
+      onOpenChange={setSignInOpen}  
+      isDismissable={true} 
+      isKeyboardDismissDisabled={false}
+    >
+      <ModalContent>
+        {(onClose) => (  
+          <>
+            <ModalHeader className="flex flex-col gap-1">Sign in</ModalHeader>
+            <ModalBody>
+              <Input
+                classNames={{
+                  base: "max-w-full sm:max-w-[18rem] h-10",
+                  mainWrapper: "h-full",
+                  input: "text-small",
+                  inputWrapper:
+                    "h-full font-normal text-default-500 bg-default-400/10 dark:bg-default-500/10",
+                }}
+                label="Email"
+                labelPlacement="outside"
+                size="sm"
+                type="email"
+                radius="lg"
+              />
+
+              <Input
+                classNames={{
+                  base: "max-w-full sm:max-w-[18rem] h-10",
+                  mainWrapper: "h-full",
+                  input: "text-small",
+                  inputWrapper:
+                    "h-full font-normal text-default-500 bg-default-400/10 dark:bg-default-500/10",
+                }}
+                label="Password"
+                labelPlacement="outside"
+                size="sm"
+                type="password"
+                radius="lg"
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button color="danger" variant="light" onPress={onClose}>
+                Close
+              </Button>
+              <Button color="primary">
+                Sign In
+              </Button>
+            </ModalFooter>
+          </>
+        )}
+  </ModalContent>
+</Modal>
+
+
         <NavbarItem>
           <Link className="text-[13px] text-gray-400 tracking-wider font-bold" 
                 color="foreground" 
-                href="#">
-            CREATE ACCOUNTE
+                href="#"
+                onClick={() => setIsCreateAccountOpen(true)}>
+            CREATE ACCOUNT
           </Link>
         </NavbarItem>
+
+    <Modal 
+      isOpen={isCreateAccountOpen} 
+      onOpenChange={setIsCreateAccountOpen}  
+      isDismissable={true} 
+      isKeyboardDismissDisabled={false}
+    >
+      <ModalContent>
+        {(onClose) => (  
+          <>
+            <ModalHeader className="flex flex-col gap-1">Create account</ModalHeader>
+            <ModalBody>
+              <Input
+                classNames={{
+                  base: "max-w-full sm:max-w-[18rem] h-10",
+                  mainWrapper: "h-full",
+                  input: "text-small",
+                  inputWrapper:
+                    "h-full font-normal text-default-500 bg-default-400/10 dark:bg-default-500/10",
+                }}
+                label="Your Email"
+                labelPlacement="outside"
+                size="sm"
+                type="email"
+                radius="lg"
+              />
+
+              <Input
+                classNames={{
+                  base: "max-w-full sm:max-w-[18rem] h-10",
+                  mainWrapper: "h-full",
+                  input: "text-small",
+                  inputWrapper:
+                    "h-full font-normal text-default-500 bg-default-400/10 dark:bg-default-500/10",
+                }}
+                label="Create a password"
+                labelPlacement="outside"
+                size="sm"
+                type="password"
+                radius="lg"
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button color="danger" variant="light" onPress={onClose}>
+                Close
+              </Button>
+              <Button color="primary">
+                Create your account now!
+              </Button>
+            </ModalFooter>
+          </>
+        )}
+  </ModalContent>
+</Modal>
+
+
         <NavbarItem>
           <Link className="text-[13px] text-gray-400 tracking-wider font-bold" 
                 color="foreground" 
