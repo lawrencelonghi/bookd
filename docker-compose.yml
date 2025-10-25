@@ -1,6 +1,25 @@
 version: '3.8'
 
 services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: bookd-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bookd
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   # Production service
   nextjs:
     container_name: heroui-nextjs-app
@@ -12,11 +31,16 @@ services:
     environment:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/bookd
+      - JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
     # Uncomment to use environment file
     # env_file:
     #   - .env.production
-    
+     
   # Development service with hot-reload
   nextjs-dev:
     container_name: heroui-nextjs-dev
@@ -32,8 +56,16 @@ services:
     environment:
       - NODE_ENV=development
       - WATCHPACK_POLLING=true
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/bookd
+      - JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
     command: npm run dev
+    depends_on:
+      postgres:
+        condition: service_healthy
     profiles:
       - dev
     stdin_open: true
     tty: true
+
+volumes:
+  postgres_data:

@@ -3,7 +3,7 @@
 FROM node:20-alpine
 
 # Install dependencies for better compatibility
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl
 
 WORKDIR /app
 
@@ -13,10 +13,16 @@ COPY package.json package-lock.json* ./
 # Install dependencies
 RUN npm ci --legacy-peer-deps
 
+# Copy prisma schema
+COPY prisma ./prisma/
+
+# Generate Prisma Client
+RUN npx prisma generate
+
 # Copy source code
 COPY . .
 
 EXPOSE 3000
 
 # Use turbopack for faster development
-CMD ["npm", "run", "dev"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run dev"]
