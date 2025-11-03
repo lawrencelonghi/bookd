@@ -156,7 +156,7 @@ export const Navbar = () => {
             src="/images/logoBookd.png"
             width={90}
           />
-          <p className="font-bold ml-0 text-3xl">Bookd</p>
+          <p className="font-bold ml-0 text-gray-300 text-3xl">Bookd</p>
         </Link>
       </NavbarBrand>
 
@@ -341,15 +341,18 @@ export const Navbar = () => {
             BOOKS
           </Link>
         </NavbarItem>
+        {user && (
         <NavbarItem>
           <Link
             className="text-[13px] text-gray-400 tracking-wider font-bold"
             color="foreground"
-            href="/lists"
+            href="/shelf"
           >
-            LISTS
+            SHELF
           </Link>
         </NavbarItem>
+        )}
+
       </NavbarContent>
 
       <NavbarContent as="div" className="ml-6 md:flex gap-6" justify="end">
