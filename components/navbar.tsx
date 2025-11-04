@@ -21,18 +21,14 @@ import { Link } from "@heroui/link";
 import { Input } from "@heroui/input";
 import Image from "next/image";
 import { Search, LogOut } from "lucide-react";
+import { useAuth } from '@/app/contexts/AuthContext';
 
-interface User {
-  id: string;
-  email: string;
-}
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isCreateAccountOpen, setIsCreateAccountOpen] = React.useState(false);
   const [isSignInOpen, setSignInOpen] = React.useState(false);
-  const [user, setUser] = React.useState<User | null>(null);
-  const [isCheckingAuth, setIsCheckingAuth] = React.useState(true);
+  const { user, setUser } = useAuth();
 
   const [signInEmail, setSignInEmail] = React.useState("");
   const [signInPassword, setSignInPassword] = React.useState("");
@@ -46,25 +42,6 @@ export const Navbar = () => {
 
   const menuItems = ["Sign in", "Create account", "Books"];
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    try {
-      const response = await fetch("/api/auth/me");
-
-      if (response.ok) {
-        const data = await response.json();
-
-        setUser(data.user);
-      }
-    } catch (error) {
-      console.error("Auth check failed:", error);
-    } finally {
-      setIsCheckingAuth(false);
-    }
-  };
 
   const handleSignIn = async () => {
     setSignInError("");
@@ -99,7 +76,7 @@ export const Navbar = () => {
     }
   };
 
-  const handleSignUp = async () => {
+ const handleSignUp = async () => {
     setSignUpError("");
     setSignUpLoading(true);
 
@@ -411,3 +388,4 @@ export const Navbar = () => {
     </HeroUINavbar>
   );
 };
+
