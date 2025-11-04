@@ -4,7 +4,6 @@ import { BookCard } from "./bookCard";
 import { useEffect, useState } from "react";
 import type { Book } from "./bookCard";
 import { FetchGoogleBooks } from "@/app/api/googleBooks/booksApi";
-import { log } from "console";
 
 interface GoogleBooksResponse {
   items?: Array<{
@@ -24,6 +23,8 @@ export const BookList = () => {
   const [classicBooks, setClassicBooks] = useState<Book[]>([]);
   const [fictionBooks, setFictionBooks] = useState<Book[]>([]);
   const [biographyBooks, setBiographyBooks] = useState<Book[]>([]);
+  const [newReleasesBooks, setNewReleasesBooks] = useState<Book[]>([]);
+
   const [loading, setLoading] = useState(true);
 
   const transformGoogleBook = (item: any): Book => ({
@@ -36,21 +37,23 @@ export const BookList = () => {
   pageCount: item.volumeInfo.pageCount,
   categories: item.volumeInfo.categories,
   publisher: item.volumeInfo.publisher,
-  book: item.volumeInfo.title // Not sure what this field is for
+  book: item.volumeInfo.title 
 });
 
   useEffect(() => {
     const loadBooks = async () => {
       try {
         setLoading(true)
-        const [classics, fiction, biography] = await Promise.all([
-        FetchGoogleBooks('subject:classics', 40, 'relevance'),
-        FetchGoogleBooks('subject:fiction', 40, 'relevance'),
-        FetchGoogleBooks('subject:biography', 40, 'relevance')
+        const [newReleases, classics, fiction, biography] = await Promise.all([
+        FetchGoogleBooks('publishedDate:2024', 40, 'newest'),
+        FetchGoogleBooks('subject:classics', 40),
+        FetchGoogleBooks('subject:fiction', 40),
+        FetchGoogleBooks('subject:biography', 40)
         ]);
-        setClassicBooks(classics.items?.slice(0, 10).map(transformGoogleBook) || []);
-        setFictionBooks(fiction.items?.slice(0, 10).map(transformGoogleBook) || []);
-        setBiographyBooks(biography.items?.slice(0, 10).map(transformGoogleBook) || []);
+        setNewReleasesBooks(newReleases.items?.slice(0, 40).map(transformGoogleBook) || []);
+        setClassicBooks(classics.items?.slice(0, 40).map(transformGoogleBook) || []);
+        setFictionBooks(fiction.items?.slice(0, 40).map(transformGoogleBook) || []);
+        setBiographyBooks(biography.items?.slice(0, 40).map(transformGoogleBook) || []);
       } catch (error) {
         console.error('Erro ao carregar livros:', error);
     } finally {
@@ -68,15 +71,23 @@ export const BookList = () => {
   return (
     <main className="flex flex-col gap-8">
       <section>
-        <h2 className="text-2xl font-bold mb-4">Classics</h2>     
-        <div className="flex gap-3 flex-wrap mb-10"> 
+        <h2 className="text-2xl font-bold mb-10 text-center">New Releases</h2>     
+        <div className="flex gap-5 flex-wrap mb-10"> 
+          {newReleasesBooks.map((newReleasesBook) => (
+            <BookCard key={newReleasesBook.id} book={newReleasesBook}  />
+          ))}
+        </div>
+      </section>     
+      <section>
+        <h2 className="text-2xl font-bold mb-10 text-center">Classics</h2>     
+        <div className="flex gap-5 flex-wrap mb-10"> 
           {classicBooks.map((classicBook) => (
             <BookCard key={classicBook.id} book={classicBook}  />
           ))}
         </div>
       </section>
       <section>
-        <h2 className="text-2xl font-bold mb-4">Fiction</h2>     
+        <h2 className="text-2xl font-bold mb-10 text-center">Fiction</h2>     
         <div className="flex gap-3 flex-wrap"> 
           {fictionBooks.map((fictionBook) => (
             <BookCard key={fictionBook.id} book={fictionBook}/>            
@@ -84,7 +95,7 @@ export const BookList = () => {
         </div>
       </section>
       <section>
-        <h2 className="text-2xl font-bold mb-4">Biography</h2>     
+        <h2 className="text-2xl font-bold mb-10 text-center">Biography</h2>     
         <div className="flex gap-3 flex-wrap"> 
           {biographyBooks.map((biographyBook) => (
             <BookCard key={biographyBook.id} book={biographyBook} />

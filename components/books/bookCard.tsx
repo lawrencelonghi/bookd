@@ -31,7 +31,7 @@ export const BookCard = ({ book }: BookCardProps) => {
     <>
     
       <div 
-        className="relative w-[170px] h-[250px] overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+        className="relative w-[150px] h-[230px] overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl"
     
       >
         <Image
