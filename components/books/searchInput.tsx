@@ -138,7 +138,7 @@ const SearchInput = () => {
     <div className="relative">
       <Input
         classNames={{
-          base: "max-w-full sm:max-w-[18rem] mt-12 h-10",
+          base: "max-w-full sm:max-w-[18rem] mt-1 h-10",
           mainWrapper: "h-full",
           input: "text-small",
           inputWrapper:
@@ -147,7 +147,7 @@ const SearchInput = () => {
         radius="full"
         isClearable
         size="md"
-        startContent={<Search size={18} />}
+        startContent={<Search size={18} />} 
         type="search"
         value={inputValue}
         onChange={handleSearchInput}
@@ -159,13 +159,13 @@ const SearchInput = () => {
       />
       
       {showResults && (
-        <div className="absolute top-full mt-2 w-full max-w-2xl bg-white dark:bg-gray-800 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50 border border-gray-200 dark:border-gray-700">
+        <div className="absolute top-full mt-2 w-lg bg-white dark:bg-gray-800 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50 border border-gray-200 dark:border-gray-700">
           {isSearching ? (
             <div className="p-4 text-center text-gray-500">
               Searching...
             </div>
           ) : searchResults.length > 0 ? (
-            <div className="divide-y divide-gray-200 dark:divide-gray-700">
+            <div className="divide-y divide-gray-200 dark:divide-gray-700 ">
               {searchResults.map((result) => (
                 <div 
                   key={result.id} 

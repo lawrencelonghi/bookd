@@ -1,5 +1,5 @@
 'use client';
-
+import { Button } from "@heroui/button";
 import { BookCard } from "./bookCard";
 import { useEffect, useState } from "react";
 import type { Book } from "./bookCard";
@@ -98,7 +98,8 @@ export const BookList = () => {
         <h2 className="text-2xl font-bold mb-10 text-center">Biography</h2>     
         <div className="flex gap-3 flex-wrap"> 
           {biographyBooks.map((biographyBook) => (
-            <BookCard key={biographyBook.id} book={biographyBook} />
+            <BookCard key={biographyBook.id} book={biographyBook}
+             />
           ))}
         </div>
       </section>

@@ -8,7 +8,7 @@ const BooksPage = () => {
   return (
    <BookModalProvider>
     <div>
-    <div className="flex flex-col gap-6 py-8 items-center justify-center mb-20">
+    <div className="flex flex-col gap-14 py-8 items-center justify-center mb-10">
     <h1 className={title({ size: "sm" })}>Find what interests you.</h1>
     <SearchInput/>
     </div>    

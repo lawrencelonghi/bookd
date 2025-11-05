@@ -22,6 +22,7 @@ import { Input } from "@heroui/input";
 import Image from "next/image";
 import { Search, LogOut } from "lucide-react";
 import { useAuth } from '@/app/contexts/AuthContext';
+import SearchInput from "./books/searchInput";
 
 
 export const Navbar = () => {
@@ -332,20 +333,10 @@ export const Navbar = () => {
 
       </NavbarContent>
 
-      <NavbarContent as="div" className="ml-6 md:flex gap-6" justify="end">
-        <Input
-          classNames={{
-            base: "max-w-full sm:max-w-[10rem] h-10",
-            mainWrapper: "h-full",
-            input: "text-small",
-            inputWrapper:
-              "h-full font-normal text-default-500 bg-default-400/10 dark:bg-default-500/10",
-          }}
-          radius="full"
-          size="sm"
-          startContent={<Search size={18} />}
-          type="search"
-        />
+      <NavbarContent as="div" className="ml-6 md:flex gap-6" >
+        <div className="top-20">
+          <SearchInput/>
+        </div>
 
         {user && (
           <>
