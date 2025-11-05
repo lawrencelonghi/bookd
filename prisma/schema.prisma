@@ -19,4 +19,40 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  books     UserBook[]
+}
+
+model Book {
+  id            String     @id @default(cuid())
+  googleBooksId String     @unique
+  title         String
+  authors       String[]
+  imageUrl      String?    // ← ? significa opcional (pode ser null)
+  publishedDate String?
+  description   String?    @db.Text
+  pageCount     Int?
+  categories    String[]
+  publisher     String?
+  createdAt     DateTime   @default(now())
+  users         UserBook[]
+}
+
+model UserBook {
+  id        String     @id @default(cuid())
+  userId    String 
+  bookId    String     
+  status    BookStatus 
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  
+  user User @relation(fields: [userId], references: [id])
+  book Book @relation(fields: [bookId], references: [id])
+  
+  @@unique([userId, bookId])  
+}
+
+enum BookStatus {
+  WANT_TO_READ
+  READING
+  READ
 }

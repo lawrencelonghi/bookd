@@ -38,9 +38,7 @@ export function clearAuthCookie(response: NextResponse) {
 }
 
 // Get current user from cookies (for API routes)
-export async function getCurrentUser(
-  request: NextRequest,
-): Promise<JWTPayload | null> {
+export async function getCurrentUser(request: NextRequest,): Promise<JWTPayload | null> {
   const token = request.cookies.get("auth_token")?.value;
 
   if (!token) return null;

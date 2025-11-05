@@ -1,47 +1,113 @@
 'use client'
 import React from "react";
-import { Search } from "lucide-react";
+import { Search, Star } from "lucide-react";
 import { Input } from "@heroui/input";
 import { FetchGoogleBooks } from "@/app/api/googleBooks/booksApi";
 import { Book } from "./bookCard";
-import { setTimeout } from "node:timers/promises";
-import { Star } from "lucide-react";
+import { BookStatus } from "@/types/book";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 const SearchInput = () => {
-  const [inputValue, setInputValue] = React.useState("")
-  const [searchResults, setSearchResults] = React.useState<Book[]>([])
-  const [isSearching, setIsSearching] = React.useState(false)
-  const [showResults, setShowResults] = React.useState(false)
-  const [isStarred, setIsStarred] = React.useState(false)
-   const [starredBooks, setStarredBooks] = React.useState<Set<string>>(new Set())
-  const searchTimeoutRef = React.useRef<number>()
+  const { user } = useAuth();
+  const [inputValue, setInputValue] = React.useState("");
+  const [searchResults, setSearchResults] = React.useState<Book[]>([]);
+  const [isSearching, setIsSearching] = React.useState(false);
+  const [showResults, setShowResults] = React.useState(false);
+  const [savedBooks, setSavedBooks] = React.useState<Set<string>>(new Set());
+  const [loadingSaves, setLoadingSaves] = React.useState<Set<string>>(new Set());
+  const searchTimeoutRef = React.useRef<number>();
 
-   const toggleStar = (bookId: string) => {
-    setStarredBooks(prev => {
-      const newSet = new Set(prev)
-      if (newSet.has(bookId)) {
-        newSet.delete(bookId)
-      } else {
-        newSet.add(bookId)
+  // Carrega os livros salvos do usuário quando componente monta
+  React.useEffect(() => {
+    if (user) {
+      loadUserBooks();
+    }
+  }, [user]);
+
+  const loadUserBooks = async () => {
+    try {
+      const response = await fetch("/api/books/user-books");
+      if (response.ok) {
+        const data = await response.json();
+        const bookIds = new Set<string>(
+          data.userBooks.map((ub: any) => ub.book.googleBooksId)
+        );
+        setSavedBooks(bookIds);
       }
-      return newSet
-    })
-  }
+    } catch (error) {
+      console.error("Error loading user books:", error);
+    }
+  };
+
+  const handleSaveBook = async (book: Book) => {
+    if (!user) {
+      alert("Please sign in to save books");
+      return;
+    }
+
+    const bookId = book.id;
+    setLoadingSaves(prev => new Set(prev).add(bookId));
+
+    try {
+      if (savedBooks.has(bookId)) {
+        // Remove do banco (implementar endpoint de remoção se necessário)
+        setSavedBooks(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(bookId);
+          return newSet;
+        });
+      } else {
+        // Adiciona ao banco
+        const response = await fetch("/api/books/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            googleBooksId: bookId,
+            title: book.title,
+            authors: book.authors,
+            imageUrl: book.imageUrl,
+            publishedDate: book.publishedDate,
+            description: book.description,
+            pageCount: book.pageCount,
+            categories: book.categories,
+            publisher: book.publisher,
+            status: BookStatus.WANT_TO_READ
+          })
+        });
+
+        if (response.ok) {
+          setSavedBooks(prev => new Set(prev).add(bookId));
+        } else {
+          const data = await response.json();
+          alert(data.error || "Failed to save book");
+        }
+      }
+    } catch (error) {
+      console.error("Error saving book:", error);
+      alert("Failed to save book");
+    } finally {
+      setLoadingSaves(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(bookId);
+        return newSet;
+      });
+    }
+  };
 
   async function handleSearchInput(e: React.ChangeEvent<HTMLInputElement>) {
-    const newSearchInputValue = e.target.value
-    setInputValue(newSearchInputValue)
+    const newSearchInputValue = e.target.value;
+    setInputValue(newSearchInputValue);
 
-    if(searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current)
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
     }
     
     if (newSearchInputValue.trim()) {
-      setIsSearching(true)
-      setShowResults(true)
+      setIsSearching(true);
+      setShowResults(true);
       searchTimeoutRef.current = window.setTimeout(async () => {
         try {
-          const data = await FetchGoogleBooks(newSearchInputValue, 40)
+          const data = await FetchGoogleBooks(newSearchInputValue, 40);
           const results: Book[] = data.items?.map((item: any) => ({
             id: item.id,
             title: item.volumeInfo.title,
@@ -53,26 +119,23 @@ const SearchInput = () => {
             categories: item.volumeInfo.categories,
             publisher: item.volumeInfo.publisher,
             book: item.volumeInfo.title
-        })) || []
-        setSearchResults(results)
-    } catch (error) {
-        console.error('Search error:', error)
-        setSearchResults([])
-    } finally {
-      setIsSearching(false)
-    }
-  }, 500)
-  } else {
-      setShowResults(false)
-      setSearchResults([])
+          })) || [];
+          setSearchResults(results);
+        } catch (error) {
+          console.error('Search error:', error);
+          setSearchResults([]);
+        } finally {
+          setIsSearching(false);
+        }
+      }, 500);
+    } else {
+      setShowResults(false);
+      setSearchResults([]);
     }
   }
-    
-
-
 
   return (
-     <div className="relative">
+    <div className="relative">
       <Input
         classNames={{
           base: "max-w-full sm:max-w-[18rem] mt-12 h-10",
@@ -89,13 +152,12 @@ const SearchInput = () => {
         value={inputValue}
         onChange={handleSearchInput}
         onClear={() => {
-          setInputValue("")
-          setShowResults(false)
-          setSearchResults([])
+          setInputValue("");
+          setShowResults(false);
+          setSearchResults([]);
         }}
       />
       
-      {/* Search Results Modal/Dropdown */}
       {showResults && (
         <div className="absolute top-full mt-2 w-full max-w-2xl bg-white dark:bg-gray-800 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50 border border-gray-200 dark:border-gray-700">
           {isSearching ? (
@@ -132,13 +194,21 @@ const SearchInput = () => {
                     </div>
                     <div className="flex items-end">
                       <button 
-                        onClick={() => toggleStar(result.id)}
-                        className="transition-colors cursor-pointer"
+                        onClick={() => handleSaveBook(result)}
+                        disabled={loadingSaves.has(result.id)}
+                        className="transition-colors cursor-pointer disabled:opacity-50"
                       >
-                        <Star 
-                          size={18}
-                          className={starredBooks.has(result.id) ? "fill-yellow-400 text-yellow-400" : "text-gray-400"}
-                        />
+                        {loadingSaves.has(result.id) ? (
+                          <div className="w-[18px] h-[18px] border-2 border-yellow-400 border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <Star 
+                            size={18}
+                            className={savedBooks.has(result.id) 
+                              ? "fill-yellow-400 text-yellow-400" 
+                              : "text-gray-400 hover:text-yellow-400"
+                            }
+                          />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -153,10 +223,7 @@ const SearchInput = () => {
         </div>
       )}
     </div>
-  )
+  );
+};
 
-  
-
-}
-
-export default SearchInput
+export default SearchInput;
