@@ -43,7 +43,6 @@ export const Navbar = () => {
   const [signUpLoading, setSignUpLoading] = React.useState(false);
   const [signUpError, setSignUpError] = React.useState("");
 
-  const menuItems = ["Sign in", "Create account", "Books"];
 
   const router = useRouter();
 
@@ -368,61 +367,52 @@ export const Navbar = () => {
         )}
       </NavbarContent>
 
-<NavbarMenu className="flex flex-col items-center justify-center gap-10">
-  {menuItems.map((item, index) => (
-    <NavbarMenuItem key={`${item}-${index}`}>
-    {!user && (
-     <Link
-        className="w-full text-2xl"
-        color={
-          index === 2
-            ? "warning"
-            : index === menuItems.length - 1
-              ? "danger"
-              : "foreground"
-        }
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
-          
-          if (index === 2) {
-            // Fecha o menu e navega para books
-            setIsMenuOpen(false);
-            setTimeout(() => {
-              router.push('/books');
-            }, 100);
-          } else if (index < 1) {
-            setSignInOpen(true);
-          } else {
-            setIsCreateAccountOpen(true);
-          }
-        }}
-        size="sm"
-      >
-        {item}
-      </Link>
-      )}
+<NavbarMenu className="flex flex-col items-center text-center justify-center gap-10">
+    
       {user && (
         <>
-        <Link className="w-full text-2xl"
-              href="/books">
+    
+        <Link className="text-white tracking-wide cursor-pointer text-2xl"
+              href="/books"
+              >
           Books
         </Link>
 
-        <Link className="w-full text-2xl"
+        <Link className="text-white text-2xl tracking-wide cursor-pointer"
               href="/shelf">
           Shelf
         </Link>
 
-         <Button className="w-full text-2xl"
-                 onPress={handleLogout}>
-          Log Out
+        <Button
+          color="danger"
+          size="md"
+          startContent={<LogOut size={16} />}
+          variant="light"
+          onClick={handleLogout}
+        >
+          Logout
         </Button>
         </>
       )}
- 
-    </NavbarMenuItem>
-  ))}
+      {!user && (
+        <>
+        <Link className="text-white cursor-pointer tracking-wide text-center text-2xl"
+              onPress={() => setSignInOpen(true)}>
+          Sign In
+        </Link>
+
+         <Link className="text-white cursor-pointer tracking-wide text-2xl"
+                 onPress={() => setIsCreateAccountOpen(true)}>
+          Create Account
+        </Link>
+
+        <Link className="text-yellow-300 cursor-pointer tracking-wide text-2xl"
+              href="/books"
+              >
+          Books
+        </Link>
+        </>
+      )}
 </NavbarMenu>
     </HeroUINavbar>
   );
