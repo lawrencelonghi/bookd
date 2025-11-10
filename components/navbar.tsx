@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Navbar as HeroUINavbar,
   NavbarContent,
@@ -23,6 +24,7 @@ import Image from "next/image";
 import { Search, LogOut } from "lucide-react";
 import { useAuth } from '@/app/contexts/AuthContext';
 import SearchInput from "./books/searchInput";
+import next from "next";
 
 
 export const Navbar = () => {
@@ -42,6 +44,8 @@ export const Navbar = () => {
   const [signUpError, setSignUpError] = React.useState("");
 
   const menuItems = ["Sign in", "Create account", "Books"];
+
+  const router = useRouter();
 
 
   const handleSignIn = async () => {
@@ -121,20 +125,20 @@ export const Navbar = () => {
 
   return (
     <HeroUINavbar
-      className="bg-neutral-900"
+      className="bg-neutral-900 flex"
       position="static"
       onMenuOpenChange={setIsMenuOpen}
     >
-      <NavbarBrand className="flex items-center gap-0">
+      <NavbarBrand className="flex items-center gap-10">
         <Link href="/">
           <Image
             alt="Bookd"
-            className="object-cover object-center"
+            className="object-cover object-center w-12 md:w-24"
             height={100}
             src="/images/logoBookd.png"
             width={90}
           />
-          <p className="font-bold ml-0 text-gray-300 text-3xl">Bookd</p>
+          <p className="font-bold ml-0 text-gray-300 text-2xl md:text-3xl">Bookd</p>
         </Link>
       </NavbarBrand>
 
@@ -332,11 +336,19 @@ export const Navbar = () => {
         )}
 
       </NavbarContent>
-
+      
+      
       <NavbarContent as="div" className="ml-6 md:flex gap-6" >
-        <div className="top-20">
+        {user && (
+        <div className="top-20 hidden md:block">
           <SearchInput/>
         </div>
+        )}
+        {!user && (
+         <div className="top-20">
+          <SearchInput/>
+        </div>         
+        )}
 
         {user && (
           <>
@@ -356,26 +368,62 @@ export const Navbar = () => {
         )}
       </NavbarContent>
 
-      <NavbarMenu className="flex flex-col items-center justify-center gap-10">
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              className="w-full text-2xl"
-              color={
-                index === 2
-                  ? "warning"
-                  : index === menuItems.length - 1
-                    ? "danger"
-                    : "foreground"
-              }
-              href="#"
-              size="lg"
-            >
-              {item}
-            </Link>
-          </NavbarMenuItem>
-        ))}
-      </NavbarMenu>
+<NavbarMenu className="flex flex-col items-center justify-center gap-10">
+  {menuItems.map((item, index) => (
+    <NavbarMenuItem key={`${item}-${index}`}>
+    {!user && (
+     <Link
+        className="w-full text-2xl"
+        color={
+          index === 2
+            ? "warning"
+            : index === menuItems.length - 1
+              ? "danger"
+              : "foreground"
+        }
+        href="#"
+        onClick={(e) => {
+          e.preventDefault();
+          
+          if (index === 2) {
+            // Fecha o menu e navega para books
+            setIsMenuOpen(false);
+            setTimeout(() => {
+              router.push('/books');
+            }, 100);
+          } else if (index < 1) {
+            setSignInOpen(true);
+          } else {
+            setIsCreateAccountOpen(true);
+          }
+        }}
+        size="sm"
+      >
+        {item}
+      </Link>
+      )}
+      {user && (
+        <>
+        <Link className="w-full text-2xl"
+              href="/books">
+          Books
+        </Link>
+
+        <Link className="w-full text-2xl"
+              href="/shelf">
+          Shelf
+        </Link>
+
+         <Button className="w-full text-2xl"
+                 onPress={handleLogout}>
+          Log Out
+        </Button>
+        </>
+      )}
+ 
+    </NavbarMenuItem>
+  ))}
+</NavbarMenu>
     </HeroUINavbar>
   );
 };
