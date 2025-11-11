@@ -73,18 +73,16 @@ const handleSignUp = async () => {
 
   return (
     <section className="flex flex-col flex-wrap text-center items-center justify-center py-8 md:py-10">
-      <h1 className="text-md md:text-3xl">Track books you&apos;ve readed.</h1>
-      <div className="flex flex-wrap justify-center gap-8 object-cover object-center mt-10 mb-9">
+      <h1 className="text-2xl md:text-3xl">Track books you&apos;ve readed.</h1>
+      <div className="flex justify-center gap-8 object-cover object-center mt-10 mb-9">
         <Image
           alt="Farenheit 451 book cover"
-          className="hidden md:block"
           height={150}
           src="/images/farenheitCover.jpg"
           width={200}
         />
         <Image
           alt="Maya Angelou book cover"
-          className="hidden md:block"
           height={200}
           src="/images/MayaCover.jpg"
           width={200}
@@ -92,22 +90,24 @@ const handleSignUp = async () => {
         <Image
           alt="Psycho book cover"
           height={200}
+          className="hidden md:block"
           src="/images/PsychoCover.jpg"
           width={200}
         />
         <Image
           alt=" A Clockwork Orange book cover"
           height={200}
+          className="hidden md:block"
           src="/images/kubrikCover.jpg"
           width={200}
         />
       </div>
       <div className="inline-block max-w-lg text-center justify-center">
         <div className="flex flex-col gap-3 mb-10">
-          <h1 className="text-md md:text-3xl">
+          <h1 className="text-2xl md:text-3xl">
             Save those you want to read.
           </h1>
-          <h1 className="text-md md:text-3xl">
+          <h1 className="text-2xl md:text-3xl">
             Tell your friends what&apos;s good.
           </h1>
         </div>

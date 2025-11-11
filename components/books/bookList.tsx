@@ -45,15 +45,15 @@ export const BookList = () => {
       try {
         setLoading(true)
         const [newReleases, classics, fiction, biography] = await Promise.all([
-        FetchGoogleBooks('publishedDate:2024', 40, 'newest'),
-        FetchGoogleBooks('subject:classics', 40),
-        FetchGoogleBooks('subject:fiction', 40),
-        FetchGoogleBooks('subject:biography', 40)
+        FetchGoogleBooks('publishedDate:2024', 7, 'newest'),
+        FetchGoogleBooks('subject:classics', 7, 'newest'),
+        FetchGoogleBooks('subject:fiction', 7, 'newest'),
+        FetchGoogleBooks('subject:biography', 7, 'newest')
         ]);
-        setNewReleasesBooks(newReleases.items?.slice(0, 40).map(transformGoogleBook) || []);
-        setClassicBooks(classics.items?.slice(0, 40).map(transformGoogleBook) || []);
-        setFictionBooks(fiction.items?.slice(0, 40).map(transformGoogleBook) || []);
-        setBiographyBooks(biography.items?.slice(0, 40).map(transformGoogleBook) || []);
+        setNewReleasesBooks(newReleases.items?.slice(0, 7).map(transformGoogleBook) || []);
+        setClassicBooks(classics.items?.slice(0, 7).map(transformGoogleBook) || []);
+        setFictionBooks(fiction.items?.slice(0, 7).map(transformGoogleBook) || []);
+        setBiographyBooks(biography.items?.slice(0, 7).map(transformGoogleBook) || []);
       } catch (error) {
         console.error('Erro ao carregar livros:', error);
     } finally {
@@ -72,7 +72,7 @@ export const BookList = () => {
     <main className="flex flex-col items-center gap-8">
       <section>
         <h2 className="text-2xl font-bold mb-10 text-center">New Releases</h2>     
-        <div className="flex justify-center gap-5 flex-wrap mb-10"> 
+        <div className="flex justify-center  gap-5 flex-wrap mb-10"> 
           {newReleasesBooks.map((newReleasesBook) => (
             <BookCard key={newReleasesBook.id} book={newReleasesBook}  />
           ))}
