@@ -6,6 +6,7 @@ import { FetchGoogleBooks } from "@/app/api/googleBooks/booksApi";
 import { Book } from "./bookCard";
 import { BookStatus } from "@/types/book";
 import { useAuth } from "@/app/contexts/AuthContext";
+import Link from "next/link";
 
 const SearchInput = () => {
   const { user } = useAuth();
@@ -159,6 +160,7 @@ const SearchInput = () => {
       />
       
       {showResults && (
+        
         <div className="absolute top-full mt-2 w-lg bg-white dark:bg-gray-800 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50 border border-gray-200 dark:border-gray-700">
           {isSearching ? (
             <div className="p-4 text-center text-gray-500">
@@ -167,6 +169,7 @@ const SearchInput = () => {
           ) : searchResults.length > 0 ? (
             <div className="divide-y divide-gray-200 dark:divide-gray-700 ">
               {searchResults.map((result) => (
+                <Link key={result.id} href={`/books/${result.id}`}>
                 <div 
                   key={result.id} 
                   className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
@@ -213,6 +216,7 @@ const SearchInput = () => {
                     </div>
                   </div>
                 </div>
+                </Link>
               ))}
             </div>
           ) : (
