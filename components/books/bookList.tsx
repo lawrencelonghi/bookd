@@ -69,10 +69,10 @@ export const BookList = () => {
 
 
   return (
-    <main className="flex flex-col gap-8">
+    <main className="flex flex-col items-center gap-8">
       <section>
         <h2 className="text-2xl font-bold mb-10 text-center">New Releases</h2>     
-        <div className="flex gap-5 flex-wrap mb-10"> 
+        <div className="flex justify-center gap-5 flex-wrap mb-10"> 
           {newReleasesBooks.map((newReleasesBook) => (
             <BookCard key={newReleasesBook.id} book={newReleasesBook}  />
           ))}
@@ -80,7 +80,7 @@ export const BookList = () => {
       </section>     
       <section>
         <h2 className="text-2xl font-bold mb-10 text-center">Classics</h2>     
-        <div className="flex gap-5 flex-wrap mb-10"> 
+        <div className="flex gap-5 justify-center flex-wrap mb-10"> 
           {classicBooks.map((classicBook) => (
             <BookCard key={classicBook.id} book={classicBook}  />
           ))}
@@ -88,7 +88,7 @@ export const BookList = () => {
       </section>
       <section>
         <h2 className="text-2xl font-bold mb-10 text-center">Fiction</h2>     
-        <div className="flex gap-3 flex-wrap"> 
+        <div className="flex gap-5 justify-center flex-wrap"> 
           {fictionBooks.map((fictionBook) => (
             <BookCard key={fictionBook.id} book={fictionBook}/>            
           ))}
@@ -96,7 +96,7 @@ export const BookList = () => {
       </section>
       <section>
         <h2 className="text-2xl font-bold mb-10 text-center">Biography</h2>     
-        <div className="flex gap-3 flex-wrap"> 
+        <div className="flex gap-5 justify-center flex-wrap"> 
           {biographyBooks.map((biographyBook) => (
             <BookCard key={biographyBook.id} book={biographyBook}
              />

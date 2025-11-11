@@ -72,9 +72,9 @@ const handleSignUp = async () => {
 
 
   return (
-    <section className="flex flex-col items-center justify-center py-8 md:py-10">
-      <h1 className={title({ size: "sm" })}>Track books you&apos;ve readed.</h1>
-      <div className="flex gap-8 object-cover object-center mt-10 mb-9">
+    <section className="flex flex-col flex-wrap text-center items-center justify-center py-8 md:py-10">
+      <h1 className="text-md md:text-3xl">Track books you&apos;ve readed.</h1>
+      <div className="flex flex-wrap justify-center gap-8 object-cover object-center mt-10 mb-9">
         <Image
           alt="Farenheit 451 book cover"
           className="hidden md:block"
@@ -104,10 +104,10 @@ const handleSignUp = async () => {
       </div>
       <div className="inline-block max-w-lg text-center justify-center">
         <div className="flex flex-col gap-3 mb-10">
-          <h1 className={title({ size: "sm" })}>
+          <h1 className="text-md md:text-3xl">
             Save those you want to read.
           </h1>
-          <h1 className={title({ size: "sm" })}>
+          <h1 className="text-md md:text-3xl">
             Tell your friends what&apos;s good.
           </h1>
         </div>

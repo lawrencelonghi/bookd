@@ -24,7 +24,7 @@ export const BookCard = ({ book }: BookCardProps) => {
   return (
     <Link href={`/books/${book.id}`}>
       <div 
-        className="relative w-[150px] h-[230px] overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+        className="relative w-[150px] h-[230px] border border-gray-500 rounded-sm overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl"
       >
         <Image
           alt={book.title}
