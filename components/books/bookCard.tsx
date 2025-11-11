@@ -1,12 +1,7 @@
 'use client';
 
-// import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/modal";
-import { Button } from "@heroui/button";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { useBookModal } from '../../app/books/_components/book-modal-context';
-import { FetchGoogleBooks } from "@/app/api/googleBooks/booksApi";
+import Link from "next/link";
 
 export interface Book {
   book: string
@@ -26,13 +21,10 @@ interface BookCardProps {
 }
 
 export const BookCard = ({ book }: BookCardProps) => {
-
   return (
-    <>
-    
+    <Link href={`/books/${book.id}`}>
       <div 
         className="relative w-[150px] h-[230px] overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-    
       >
         <Image
           alt={book.title}
@@ -44,10 +36,12 @@ export const BookCard = ({ book }: BookCardProps) => {
           priority={true}
           style={{ objectFit: 'cover' }}         
         />
-      <p>{book.id}</p>
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+          <p className="text-white text-xs font-semibold line-clamp-2">
+            {book.title}
+          </p>
+        </div>
       </div>
-
-      
-    </>
+    </Link>
   );
 };

@@ -5,6 +5,7 @@ import React from "react";
 import Image from "next/image";
 import { BookStatus } from "@/types/book";
 import { Button } from "@heroui/button";
+import Link from "next/link";
 
 interface UserBook {
   id: string;
@@ -138,28 +139,29 @@ const ShelfPage = () => {
       <div className="flex gap-5 flex-wrap mt-18">
         {books.map((userBook) => {
            const isUpdating = updatingBooks.has(userBook.book.googleBooksId);
-          return (
-                        <div key={userBook.id} className="flex flex-col gap-2">
-              <div 
-                className="relative w-[150px] h-[230px] overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-              >
-                <Image
-                  alt={userBook.book.title}
-                  className="object-cover"
-                  src={userBook.book.imageUrl || '/placeholder-book.png'}
-                  fill
-                  sizes="150px"
-                  quality={100}
-                  style={{ objectFit: 'cover' }}
-                />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                  <p className="text-white text-xs font-semibold line-clamp-2">
-                    {userBook.book.title}
-                  </p>
+            return (
+            <div key={userBook.id} className="flex flex-col gap-2">
+              <Link href={`/books/${userBook.book.googleBooksId}`}>
+                <div 
+                  className="relative w-[150px] h-[230px] overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                >
+                  <Image
+                    alt={userBook.book.title}
+                    className="object-cover"
+                    src={userBook.book.imageUrl || '/placeholder-book.png'}
+                    fill
+                    sizes="150px"
+                    quality={100}
+                    style={{ objectFit: 'cover' }}
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+                    <p className="text-white text-xs font-semibold line-clamp-2">
+                      {userBook.book.title}
+                    </p>
+                  </div>
                 </div>
-              </div>
+                </Link>
               
-              {/* Botões baseados no status atual */}
               {currentStatus === BookStatus.WANT_TO_READ && (
                 <Button 
                   size="sm" 
