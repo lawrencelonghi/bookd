@@ -42,9 +42,22 @@ export const Navbar = () => {
   const [signUpPassword, setSignUpPassword] = React.useState("");
   const [signUpLoading, setSignUpLoading] = React.useState(false);
   const [signUpError, setSignUpError] = React.useState("");
+  const [disableAnimation, setDisableAnimation] = React.useState(false);
 
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (!isMenuOpen) {
+      // Desabilita animação apenas quando o menu está fechando
+      setDisableAnimation(true);
+      // Reabilita após um pequeno delay
+      const timer = setTimeout(() => {
+        setDisableAnimation(false);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isMenuOpen]);
 
 
   const handleSignIn = async () => {
@@ -122,11 +135,17 @@ export const Navbar = () => {
     }
   };
 
+  const handleMenuItemClick = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <HeroUINavbar
       className="bg-neutral-900 flex"
       position="static"
+      isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
+      disableAnimation={disableAnimation}
     >
       <NavbarBrand className="flex items-center gap-10">
         <Link href="/">
@@ -372,49 +391,72 @@ export const Navbar = () => {
       {user && (
         <>
     
-        <Link className="text-white tracking-wide cursor-pointer text-2xl"
-              href="/books"
-              >
-          Books
-        </Link>
+        <NavbarMenuItem>
+          <Link className="text-white tracking-wide cursor-pointer text-2xl w-full"
+                href="/books"
+                onPress={handleMenuItemClick}
+                >
+            Books
+          </Link>
+        </NavbarMenuItem>
 
-        <Link className="text-white text-2xl tracking-wide cursor-pointer"
-              href="/shelf">
-          Shelf
-        </Link>
+        <NavbarMenuItem>
+          <Link className="text-white text-2xl tracking-wide cursor-pointer w-full"
+                href="/shelf"
+                onPress={handleMenuItemClick}>
+            Shelf
+          </Link>
+        </NavbarMenuItem>
 
-        <Button
-          color="danger"
-          size="md"
-          startContent={<LogOut size={16} />}
-          variant="light"
-          onClick={handleLogout}
-        >
-          Logout
-        </Button>
+        <NavbarMenuItem>
+          <Button
+            color="danger"
+            size="md"
+            startContent={<LogOut size={16} />}
+            variant="light"
+            onPress={() => {
+              handleLogout();
+              handleMenuItemClick();
+            }}
+          >
+            Logout
+          </Button>
+        </NavbarMenuItem>
         </>
       )}
       {!user && (
         <>
-        <Link className="text-white cursor-pointer tracking-wide text-center text-2xl"
-              onPress={() => setSignInOpen(true)}>
-          Sign In
-        </Link>
+        <NavbarMenuItem>
+          <Link className="text-white cursor-pointer tracking-wide text-center text-2xl w-full"
+                onPress={() => {
+                  setSignInOpen(true);
+                  handleMenuItemClick();
+                }}>
+            Sign In
+          </Link>
+        </NavbarMenuItem>
 
-         <Link className="text-white cursor-pointer tracking-wide text-2xl"
-                 onPress={() => setIsCreateAccountOpen(true)}>
-          Create Account
-        </Link>
+        <NavbarMenuItem>
+          <Link className="text-white cursor-pointer tracking-wide text-2xl w-full"
+                onPress={() => {
+                  setIsCreateAccountOpen(true);
+                  handleMenuItemClick();
+                }}>
+            Create Account
+          </Link>
+        </NavbarMenuItem>
 
-        <Link className="text-yellow-300 cursor-pointer tracking-wide text-2xl"
-              href="/books"
-              >
-          Books
-        </Link>
+        <NavbarMenuItem>
+          <Link className="text-yellow-300 cursor-pointer tracking-wide text-2xl w-full"
+                href="/books"
+                onPress={handleMenuItemClick}
+                >
+            Books
+          </Link>
+        </NavbarMenuItem>
         </>
       )}
 </NavbarMenu>
     </HeroUINavbar>
   );
 };
-
