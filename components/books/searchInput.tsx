@@ -161,7 +161,7 @@ const SearchInput = () => {
       
       {showResults && (
         
-        <div className="absolute top-full mt-2 w-lg bg-white dark:bg-gray-800 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50 border border-gray-200 dark:border-gray-700">
+        <div className="absolute top-full mt-2 md:w-md bg-white dark:bg-gray-800 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50 border border-gray-200 dark:border-gray-700">
           {isSearching ? (
             <div className="p-4 text-center text-gray-500">
               Searching...
@@ -183,14 +183,14 @@ const SearchInput = () => {
                       />
                     )}
                     <div className="flex-1">
-                      <h3 className="font-semibold text-sm line-clamp-1">
+                      <h3 className="font-semibold text-sm text-wrap">
                         {result.title}
                       </h3>
                       <p className="text-xs text-gray-600 dark:text-gray-400">
-                        by {result.authors?.join(', ') || 'Unknown Author'}
+                        by {result.authors?.slice(0,1) || 'Unknown Author'}
                       </p>
                       {result.publishedDate && (
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs hidden md:block text-gray-500 mt-1">
                           {result.publishedDate}
                         </p>
                       )}
