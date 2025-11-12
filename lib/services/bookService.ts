@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { BookStatus, type AddBookRequest } from "@/types/book";
+import { BookStatus, RemoveBookRequest, type AddBookRequest } from "@/types/book";
 
 export class BookService {
   static async addBookToShelf(userId: string, bookData: AddBookRequest) {
@@ -49,9 +49,9 @@ export class BookService {
       include: { book: true }
     });
   }
- static async removeBookFromShelf(userId: string, googleBooksId: string) {
+ static async removeBookFromShelf(userId: string, bookData: RemoveBookRequest) {
     const book = await prisma.book.findUnique({
-      where: { googleBooksId }
+      where: { googleBooksId: bookData.googleBooksId }
     });
 
      if (!book) {

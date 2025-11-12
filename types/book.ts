@@ -1,7 +1,7 @@
 export enum BookStatus {
   WANT_TO_READ = 'WANT_TO_READ',
   READING = 'READING',
-  READ = 'READ'
+  READ = 'READ',
 }
 
 export interface Book {
@@ -28,6 +28,20 @@ export interface UserBook {
 }
 
 export interface AddBookRequest {
+  googleBooksId: string;
+  title: string;
+  authors?: string[];
+  imageUrl?: string;
+  publishedDate?: string;
+  description?: string;
+  pageCount?: number;
+  categories?: string[];
+  publisher?: string;
+  status: BookStatus;
+}
+
+
+export interface RemoveBookRequest {
   googleBooksId: string;
   title: string;
   authors?: string[];

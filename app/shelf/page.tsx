@@ -4,8 +4,10 @@ import { useAuth } from "../contexts/AuthContext";
 import React from "react";
 import Image from "next/image";
 import { BookStatus } from "@/types/book";
+import { RemoveBookRequest } from "@/types/book";
 import { Button } from "@heroui/button";
 import Link from "next/link";
+import { Book, Trash2 } from 'lucide-react';
 
 interface UserBook {
   id: string;
@@ -27,6 +29,8 @@ const ShelfPage = () => {
   const [readBooks, setReadBooks] = React.useState<UserBook[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [updatingBooks, setUpdatingBooks] = React.useState<Set<string>>(new Set());
+  const [deletingBook, setDeletingBook] = React.useState(false)
+  const [isDeleted, setIsDeleted] = React.useState(false)
 
 
   React.useEffect(() => {
@@ -56,6 +60,45 @@ const ShelfPage = () => {
       setLoading(false);
     }
   };
+
+     //codigo novoooo
+const handleRemoveBook = async (book: UserBook) => {
+  if (deletingBook) return; // Previne múltiplas chamadas
+  
+  setDeletingBook(true);
+  
+  try {
+    const response = await fetch('/api/books/remove', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        googleBooksId: book.book.googleBooksId,
+        status: book.status,
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Erro ao remover livro');
+    }
+
+       const bookId = book.book.googleBooksId;
+    
+    if (book.status === BookStatus.WANT_TO_READ) {
+      setWantToReadBooks(prev => prev.filter(b => b.book.googleBooksId !== bookId));
+    } else if (book.status === BookStatus.READING) {
+      setReadingBooks(prev => prev.filter(b => b.book.googleBooksId !== bookId));
+    } else if (book.status === BookStatus.READ) {
+      setReadBooks(prev => prev.filter(b => b.book.googleBooksId !== bookId));
+    }
+    
+    
+  } catch (error) {
+    console.error('Erro ao remover livro:', error);
+    // Mostre uma mensagem de erro ao usuário
+  } finally {
+    setDeletingBook(false);
+  }
+};
 
   const handleUpdateStatus = async (userBook: UserBook, newStatus: BookStatus) => {
     const bookId = userBook.book.googleBooksId
@@ -135,12 +178,14 @@ const ShelfPage = () => {
       );
     }
 
+
+
     return (
-      <div className="flex gap-5 flex-wrap mt-18">
+      <div className="flex gap-10 flex-wrap mt-18">
         {books.map((userBook) => {
            const isUpdating = updatingBooks.has(userBook.book.googleBooksId);
             return (
-            <div key={userBook.id} className="flex flex-col gap-2">
+            <div key={userBook.id} className="flex flex-col items-center gap-2">
               <Link href={`/books/${userBook.book.googleBooksId}`}>
                 <div 
                   className="relative w-[150px] h-[230px] overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl"
@@ -161,7 +206,8 @@ const ShelfPage = () => {
                   </div>
                 </div>
                 </Link>
-              
+
+              <div className="flex items-center gap-1.5">
               {currentStatus === BookStatus.WANT_TO_READ && (
                 <Button 
                   size="sm" 
@@ -172,7 +218,7 @@ const ShelfPage = () => {
                 >
                   Read Now
                 </Button>
-              )}
+              )}              
 
               {currentStatus === BookStatus.READING && (
                 <Button 
@@ -196,7 +242,19 @@ const ShelfPage = () => {
                 >
                   Read Again
                 </Button>
-              )}
+              )}  
+
+                <Button 
+                  size="sm" 
+                  isIconOnly
+                  variant="bordered" 
+                  className="hover:bg-red-500 py-0 px-0"
+                  isLoading={isUpdating}
+                  onPress={() => handleRemoveBook(userBook)}
+                >
+                  <Trash2 size={'15px'}/>
+                </Button>   
+              </div>             
             </div>
           )
       })}

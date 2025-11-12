@@ -147,16 +147,16 @@ export const Navbar = () => {
       onMenuOpenChange={setIsMenuOpen}
       disableAnimation={disableAnimation}
     >
-      <NavbarBrand className="flex items-center gap-10">
+      <NavbarBrand>
         <Link href="/">
           <Image
             alt="Bookd"
-            className="object-cover object-center w-12 md:w-24"
+            className="object-cover object-center w-12 md:w-18 mr-2 md:mr-3"
             height={100}
             src="/images/logoBookd.png"
             width={90}
           />
-          <p className="font-bold ml-0 text-gray-300 text-2xl md:text-3xl">Bookd</p>
+          <p className="font-bold ml-0 text-gray-300 text-2xl md:text-2xl">Bookd</p>
         </Link>
       </NavbarBrand>
 
