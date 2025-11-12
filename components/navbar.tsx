@@ -358,7 +358,7 @@ export const Navbar = () => {
       
       <NavbarContent as="div" className="ml-6 md:flex gap-6" >
         {user && (
-        <div className="top-20 hidden md:block">
+        <div className="top-20 md:block">
           <SearchInput/>
         </div>
         )}
@@ -367,25 +367,26 @@ export const Navbar = () => {
           <SearchInput/>
         </div>         
         )}
-
-        {user && (
-          <>
-            <span className="text-[13px] text-gray-400 tracking-wider font-bold">
-              {user.email}
-            </span>
-            <Button
-              color="danger"
-              size="sm"
-              startContent={<LogOut size={16} />}
-              variant="light"
-              onClick={handleLogout}
-            >
-              Logout
-            </Button>
-          </>
-        )}
+      </NavbarContent>
+      <NavbarContent as="div" className="hidden md:flex ">
+         <span className="text-sm ml-4">{user?.email}</span>
+         <Button
+            color="danger"
+            size="md"
+            startContent={<LogOut size={16} />}
+            variant="light"
+            onPress={() => {
+              handleLogout();
+              handleMenuItemClick();
+            }}
+          >
+            Logout
+          </Button>
+         
       </NavbarContent>
 
+
+ 
 <NavbarMenu className="flex flex-col items-center text-center justify-center gap-10">
     
       {user && (
@@ -408,7 +409,7 @@ export const Navbar = () => {
           </Link>
         </NavbarMenuItem>
 
-        <NavbarMenuItem>
+        <NavbarMenuItem className="flex flex-col">
           <Button
             color="danger"
             size="md"
@@ -421,6 +422,7 @@ export const Navbar = () => {
           >
             Logout
           </Button>
+          <span className="text-sm">{user.email}</span>
         </NavbarMenuItem>
         </>
       )}
