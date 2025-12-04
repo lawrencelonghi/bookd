@@ -357,18 +357,13 @@ export const Navbar = () => {
       
       
       <NavbarContent as="div" className="ml-6 md:flex gap-6" >
-        {user && (
+        
         <div className="top-20 md:block">
           <SearchInput/>
         </div>
-        )}
-        {!user && (
-         <div className="top-20">
-          <SearchInput/>
-        </div>         
-        )}
       </NavbarContent>
-      <NavbarContent as="div" className="hidden md:flex ">
+           {user && (
+          <NavbarContent as="div" className="hidden md:flex ">
          <span className="text-sm ml-4">{user?.email}</span>
          <Button
             color="danger"
@@ -384,6 +379,8 @@ export const Navbar = () => {
           </Button>
          
       </NavbarContent>
+        )}
+      
 
 
  
