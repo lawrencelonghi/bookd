@@ -11,7 +11,7 @@ import {
   ModalBody,
   ModalFooter
 } from "@heroui/modal";
-import { useAuth } from "@/app/contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 
 interface User {

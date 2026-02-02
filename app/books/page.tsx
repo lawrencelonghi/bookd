@@ -2,7 +2,7 @@ import { BookCard } from "@/components/books/bookCard";
 import { BookList } from "@/components/books/bookList";
 import { title } from "@/components/primitives";
 import { BookModalProvider } from "./_components/book-modal-context";
-import SearchInput from "@/components/books/searchInput";
+import SearchInput from "@/components/searchInput";
 
 const BooksPage = () => {
   return (

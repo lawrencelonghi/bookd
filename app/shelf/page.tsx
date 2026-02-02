@@ -1,6 +1,6 @@
 'use client'
 import { Tabs, Tab } from "@heroui/tabs";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import React from "react";
 import Image from "next/image";
 import { BookStatus } from "@/types/book";

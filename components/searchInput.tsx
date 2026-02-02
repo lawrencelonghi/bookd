@@ -3,9 +3,9 @@ import React from "react";
 import { Search, Star } from "lucide-react";
 import { Input } from "@heroui/input";
 import { FetchGoogleBooks } from "@/app/api/googleBooks/booksApi";
-import { Book } from "./bookCard";
+import { Book } from "./books/bookCard";
 import { BookStatus } from "@/types/book";
-import { useAuth } from "@/app/contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 
 const SearchInput = () => {
@@ -17,6 +17,24 @@ const SearchInput = () => {
   const [savedBooks, setSavedBooks] = React.useState<Set<string>>(new Set());
   const [loadingSaves, setLoadingSaves] = React.useState<Set<string>>(new Set());
   const searchTimeoutRef = React.useRef<number>();
+  const containerRef = React.useRef<HTMLDivElement>(null); // ← ADICIONE
+
+  // ← ADICIONE este useEffect
+  React.useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setShowResults(false);
+      }
+    }
+
+    if (showResults) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showResults]);
 
   // Carrega os livros salvos do usuário quando componente monta
   React.useEffect(() => {
@@ -51,14 +69,12 @@ const SearchInput = () => {
 
     try {
       if (savedBooks.has(bookId)) {
-        // Remove do banco (implementar endpoint de remoção se necessário)
         setSavedBooks(prev => {
           const newSet = new Set(prev);
           newSet.delete(bookId);
           return newSet;
         });
       } else {
-        // Adiciona ao banco
         const response = await fetch("/api/books/add", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -136,7 +152,7 @@ const SearchInput = () => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}> {/* ← ADICIONE ref */}
       <Input
         classNames={{
           base: "max-w-full sm:max-w-[18rem] mt-1 h-10",
@@ -160,7 +176,6 @@ const SearchInput = () => {
       />
       
       {showResults && (
-        
         <div className="absolute top-full mt-2 md:w-md bg-white dark:bg-gray-800 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50 border border-gray-200 dark:border-gray-700">
           {isSearching ? (
             <div className="p-4 text-center text-gray-500">
@@ -170,52 +185,54 @@ const SearchInput = () => {
             <div className="divide-y divide-gray-200 dark:divide-gray-700 ">
               {searchResults.map((result) => (
                 <Link key={result.id} href={`/books/${result.id}`}>
-                <div 
-                  key={result.id} 
-                  className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
-                >
-                  <div className="flex gap-3">
-                    {result.imageUrl && (
-                      <img 
-                        src={result.imageUrl} 
-                        alt={result.title}
-                        className="w-12 h-16 object-cover rounded"
-                      />
-                    )}
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-sm text-wrap">
-                        {result.title}
-                      </h3>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
-                        by {result.authors?.slice(0,1) || 'Unknown Author'}
-                      </p>
-                      {result.publishedDate && (
-                        <p className="text-xs hidden md:block text-gray-500 mt-1">
-                          {result.publishedDate}
-                        </p>
+                  <div 
+                    className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+                  >
+                    <div className="flex gap-3">
+                      {result.imageUrl && (
+                        <img 
+                          src={result.imageUrl} 
+                          alt={result.title}
+                          className="w-12 h-16 object-cover rounded"
+                        />
                       )}
-                    </div>
-                    <div className="flex items-end">
-                      <button 
-                        onClick={() => handleSaveBook(result)}
-                        disabled={loadingSaves.has(result.id)}
-                        className="transition-colors cursor-pointer disabled:opacity-50"
-                      >
-                        {loadingSaves.has(result.id) ? (
-                          <div className="w-[18px] h-[18px] border-2 border-yellow-400 border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                          <Star 
-                            size={18}
-                            className={savedBooks.has(result.id) 
-                              ? "fill-yellow-400 text-yellow-400" 
-                              : "text-gray-400 hover:text-yellow-400"
-                            }
-                          />
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-sm text-wrap">
+                          {result.title}
+                        </h3>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                          by {result.authors?.slice(0,1) || 'Unknown Author'}
+                        </p>
+                        {result.publishedDate && (
+                          <p className="text-xs hidden md:block text-gray-500 mt-1">
+                            {result.publishedDate}
+                          </p>
                         )}
-                      </button>
+                      </div>
+                      <div className="flex items-end">
+                        <button 
+                          onClick={(e) => {
+                            e.preventDefault(); // ← ADICIONE para não acionar o Link
+                            handleSaveBook(result);
+                          }}
+                          disabled={loadingSaves.has(result.id)}
+                          className="transition-colors cursor-pointer disabled:opacity-50"
+                        >
+                          {loadingSaves.has(result.id) ? (
+                            <div className="w-[18px] h-[18px] border-2 border-yellow-400 border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <Star 
+                              size={18}
+                              className={savedBooks.has(result.id) 
+                                ? "fill-yellow-400 text-yellow-400" 
+                                : "text-gray-400 hover:text-yellow-400"
+                              }
+                            />
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
                 </Link>
               ))}
             </div>

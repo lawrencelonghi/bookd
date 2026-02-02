@@ -87,7 +87,7 @@ export class BookService {
     });
   }
 
-  // Busca todos os livros do usuário com filtro opcional por status
+  // busca todos os livros do usuário com filtro opcional por status
   static async getUserBooks(userId: string, status?: BookStatus) {
     return await prisma.userBook.findMany({
       where: {
@@ -99,7 +99,7 @@ export class BookService {
     });
   }
 
-  // Verifica se o usuário tem um livro específico
+  // verifica se o usuário tem um livro específico
   static async checkUserHasBook(userId: string, googleBooksId: string) {
     const book = await prisma.book.findUnique({
       where: { googleBooksId }
@@ -118,7 +118,7 @@ export class BookService {
     });
   }
 
-  // Busca múltiplos livros do usuário por IDs do Google Books
+  // busca múltiplos livros do usuário por IDs do Google Books
   static async getUserBooksByGoogleIds(userId: string, googleBooksIds: string[]) {
     const books = await prisma.book.findMany({
       where: {

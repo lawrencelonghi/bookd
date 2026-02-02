@@ -22,8 +22,8 @@ import { Link } from "@heroui/link";
 import { Input } from "@heroui/input";
 import Image from "next/image";
 import { Search, LogOut } from "lucide-react";
-import { useAuth } from '@/app/contexts/AuthContext';
-import SearchInput from "./books/searchInput";
+import { useAuth } from '@/contexts/AuthContext';
+import SearchInput from "./searchInput";
 import next from "next";
 
 
